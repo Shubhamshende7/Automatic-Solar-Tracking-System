@@ -1,0 +1,121 @@
+constintenablePin = 3;
+constintRightMotor = 4; // This pin is used to enable or disable the Right motor. Connected to the base of an NPN transistor.
+constintLeftMotor = 5; // This pin is used to enable or disable the Left motor. Connected to the base of an NPN transistor.
+
+constintRightSensor = A0; // This pin is used to read the value of the Right Sensor.
+constintLeftSensor = A1; // This pin is used to read the value of the Left Sensor.
+
+constintrightbutton = A5;
+constintleftbutton = A4;
+intrightbuttonread = 0;
+intleftbuttonread = 0;
+
+
+// Variable definitions
+
+intSensorLeft; // This stores the value of the Left Sensor pin to use later on in the sketch
+intSensorRight; // This stores the value of the Right Sensor pin to use later on in the sketch
+
+int count;
+int x = 0;
+
+void setup() {
+Serial.begin(9600); 
+pinMode(LeftSensor, INPUT); // Defines this pin as an input. The Arduino will read values from this pin.
+
+
+pinMode(RightSensor, INPUT); // Defines this pin as an input. The Arduino will read values from this pin.
+pinMode(RightMotor, OUTPUT);
+pinMode(LeftMotor, OUTPUT);
+pinMode(enablePin, OUTPUT);
+pinMode(rightbutton, INPUT); // Defines this pin as an input. The Arduino will read values from this pin.
+pinMode(leftbutton, INPUT); // Defines this pin as an input. The Arduino will read values from this pin.
+
+}
+void loop() {  
+x=count+1;
+
+SensorLeft = analogRead(LeftSensor); // This reads the value of the sensor, then saves it to the corresponding integer.
+delay(10); // the delay allows the Analog to Digital converter IC to recover for the next reading.
+SensorRight = analogRead(RightSensor); // This reads the value of the sensor, then saves it to the corresponding integer.
+delay(10); // the delay allows the Analog to Digital converter IC to recover for the next reading.
+rightbuttonread=digitalRead(rightbutton);
+leftbuttonread=digitalRead(leftbutton);
+// This section of the sketch is used to print the values of the
+// sensors through Serial to the computer. Useful for determining
+// if the sensors are working and if the code is also functioning properly.
+// This is known as debugging.
+
+if(SensorLeft> 300 &&SensorRight> 300)
+{
+digitalWrite(RightMotor, HIGH);
+digitalWrite(LeftMotor, HIGH);
+Serial.print("day\n");
+
+delay(100);
+}
+if(SensorLeft< 150 &&SensorRight> 300)
+{
+digitalWrite(RightMotor, LOW);
+digitalWrite(LeftMotor, HIGH);
+count++;
+Serial.print("forward\n");
+Serial.print(x);
+delay(100);
+}
+if(SensorLeft> 300 &&SensorRight< 150)
+{
+digitalWrite(RightMotor, HIGH);
+digitalWrite(LeftMotor, LOW); 
+count--;
+Serial.print("backward\n");
+Serial.print(x);
+delay(100);
+}
+if (SensorLeft< 300 &&SensorRight< 150)
+{
+digitalWrite(RightMotor, HIGH);
+digitalWrite(LeftMotor, HIGH);
+Serial.print("dark\n");
+delay(100);
+retun();
+}
+if (rightbuttonread == LOW)
+{
+digitalWrite(RightMotor, LOW);
+digitalWrite(LeftMotor, HIGH); 
+delay(1000);
+
+digitalWrite(RightMotor, LOW);
+digitalWrite(LeftMotor, LOW); 
+  }
+if (leftbuttonread == LOW)
+{
+digitalWrite(RightMotor, HIGH);
+digitalWrite(LeftMotor, LOW); 
+delay(1000);
+digitalWrite(RightMotor, LOW);
+digitalWrite(LeftMotor, LOW); 
+  }
+
+}
+voidretun()
+{
+for(int x=count; x >0; x--)
+{
+Serial.print(x);
+digitalWrite(RightMotor, HIGH);
+digitalWrite(LeftMotor, LOW);
+delay(100);
+Serial.print(x);
+digitalWrite(RightMotor, HIGH);
+digitalWrite(LeftMotor, LOW);
+delay(100);
+
+Serial.print(x);
+digitalWrite(RightMotor, HIGH);
+digitalWrite(LeftMotor, LOW);
+delay(100);
+  }
+count=0;
+  }
